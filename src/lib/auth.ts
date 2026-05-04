@@ -5,20 +5,6 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  logger: {
-    error: (error) => {
-      const e = error as Error & { cause?: unknown; type?: string };
-      const cause = e.cause;
-      console.error("[NA:type]", e.type ?? e.name ?? "unknown");
-      console.error("[NA:msg]", e.message ?? "no message");
-      if (cause instanceof Error) {
-        console.error("[NA:cause]", cause.message);
-        console.error("[NA:cause.code]", (cause as NodeJS.ErrnoException).code ?? "no code");
-      } else {
-        console.error("[NA:cause]", JSON.stringify(cause));
-      }
-    },
-  },
   providers: [
     Google({
       clientId: process.env.AUTH_GOOGLE_ID!,
