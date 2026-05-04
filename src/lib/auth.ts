@@ -8,13 +8,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   logger: {
     error: (error) => {
       const e = error as Error & { cause?: unknown; type?: string };
-      console.error("[NextAuth error]", JSON.stringify({
-        type: e.type ?? e.name,
-        message: e.message,
-        cause: e.cause instanceof Error
-          ? { message: e.cause.message, code: (e.cause as NodeJS.ErrnoException).code }
-          : String(e.cause ?? ""),
-      }));
+      const cause = e.cause;
+      console.error("[NA:type]", e.type ?? e.name ?? "unknown");
+      console.error("[NA:msg]", e.message ?? "no message");
+      if (cause instanceof Error) {
+        console.error("[NA:cause]", cause.message);
+        console.error("[NA:cause.code]", (cause as NodeJS.ErrnoException).code ?? "no code");
+      } else {
+        console.error("[NA:cause]", JSON.stringify(cause));
+      }
     },
   },
   providers: [

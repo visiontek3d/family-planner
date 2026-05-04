@@ -9,6 +9,8 @@ function createPrismaClient() {
   url.searchParams.delete("pgbouncer");
   url.searchParams.delete("sslmode");
 
+  console.log("[prisma] host:", url.hostname, "db:", url.pathname, "ssl:", process.env.NODE_ENV === "production");
+
   const pool = new Pool({
     connectionString: url.toString(),
     ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
