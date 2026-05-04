@@ -1,8 +1,13 @@
+import { Pool } from "pg";
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 function createPrismaClient() {
-  const adapter = new PrismaPg(process.env.DATABASE_URL!, { schema: "family_planner" });
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL!,
+    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+  });
+  const adapter = new PrismaPg(pool, { schema: "family_planner" });
   return new PrismaClient({ adapter });
 }
 
