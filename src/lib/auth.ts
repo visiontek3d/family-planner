@@ -6,8 +6,15 @@ import { prisma } from "@/lib/prisma";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   logger: {
-    error: (code, ...message) => {
-      console.error("[NextAuth]", code, JSON.stringify(message, null, 2));
+    error: (error) => {
+      const e = error as Error & { cause?: unknown; type?: string };
+      console.error("[NextAuth error]", JSON.stringify({
+        type: e.type ?? e.name,
+        message: e.message,
+        cause: e.cause instanceof Error
+          ? { message: e.cause.message, code: (e.cause as NodeJS.ErrnoException).code }
+          : String(e.cause ?? ""),
+      }));
     },
   },
   providers: [
